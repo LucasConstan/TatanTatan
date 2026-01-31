@@ -1,0 +1,62 @@
+/* RESET BÁSICO */
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* ===== PANTALLA INICIO ===== */
+
+.home {
+  background: linear-gradient(135deg, #1b5e20, #4caf50);
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.home-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.home-container h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+}
+
+.home-container p {
+  margin-bottom: 30px;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+/* BOTÓN */
+.btn-principal {
+  display: inline-block;
+  background: white;
+  color: #1b5e20;
+  padding: 15px 35px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-principal:hover {
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 600px) {
+  .home-container h1 {
+    font-size: 28px;
+  }
+
+  .btn-principal {
+    width: 100%;
+    padding: 15px;
+  }
+}
