@@ -69,6 +69,10 @@
     font-size: 28px;
   }
 
+  .home {
+    background-position: center top;
+  }
+
   .btn-principal {
     width: 100%;
     padding: 15px;
