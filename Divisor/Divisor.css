@@ -1,7 +1,10 @@
 body {
+  background: url("../img/fondo2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   font-family: Arial, sans-serif;
   padding: 20px;
-  background: linear-gradient(135deg, #1b5e20, #4caf50);
   color: white;
 }
 
@@ -39,6 +42,19 @@ button{
   gap: 40px;
   margin-top: 20px;
 }
+
+.opciones-cancha {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 20px;
+  color: white;
+  font-weight: bold;
+}
+
+.opciones-cancha input {
+  margin-right: 5px;
+}
+
 
 @media (max-width: 600px) {
   .grupos {

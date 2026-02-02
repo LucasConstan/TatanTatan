@@ -6,16 +6,29 @@ let personas = [
   'Ezequiel',
   'Oti',
   'Gordo',
-  'Fabi',
+  'Pola',
   'Hernan',
-  'Bruno'
+  'Bruno',
+  'Fabi',
+  'Mauri',
+  'Leo',
+  'Amigo de'
 ];
 
+// ===== Cantidad visible según la cancha =====
+function totalPersonasVisibles() {
+  const cancha = document.querySelector('input[name="cancha"]:checked').value;
+  return cancha === "5" ? 10 : 14;
+}
+
+// ===== Mostrar lista editable =====
 function mostrarLista() {
   const ul = document.getElementById('lista');
   ul.innerHTML = '';
 
-  personas.forEach((p, index) => {
+  const total = totalPersonasVisibles();
+
+  personas.slice(0, total).forEach((p, index) => {
     const li = document.createElement('li');
 
     const input = document.createElement('input');
@@ -30,10 +43,14 @@ function mostrarLista() {
   });
 }
 
+// ===== Dividir en dos grupos =====
 function dividir() {
-  const mezcladas = [...personas].sort(() => Math.random() - 0.5);
+  const total = totalPersonasVisibles();
+  const visibles = personas.slice(0, total);
 
-  const mitad = Math.ceil(mezcladas.length / 2);
+  const mezcladas = [...visibles].sort(() => Math.random() - 0.5);
+
+  const mitad = total / 2;
   const grupoA = mezcladas.slice(0, mitad);
   const grupoB = mezcladas.slice(mitad);
 
@@ -41,6 +58,7 @@ function dividir() {
   mostrarGrupo('grupoB', grupoB);
 }
 
+// ===== Mostrar grupos =====
 function mostrarGrupo(id, grupo) {
   const ul = document.getElementById(id);
   ul.innerHTML = '';
@@ -52,5 +70,14 @@ function mostrarGrupo(id, grupo) {
   });
 }
 
-// Mostrar lista al cargar la página
+// ===== Escuchar cambios de radio buttons =====
+document.querySelectorAll('input[name="cancha"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    mostrarLista();
+    document.getElementById('grupoA').innerHTML = '';
+    document.getElementById('grupoB').innerHTML = '';
+  });
+});
+
+// ===== Inicial =====
 mostrarLista();
