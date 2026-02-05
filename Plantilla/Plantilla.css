@@ -3,13 +3,17 @@
   font-family: Arial, sans-serif;
 }
 
+html, body {
+  min-height: 100vh;
+}
+
+
 body {
   margin: 0;
-  background: url("../img/fondo2.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+  min-height: 100vh;
+  background: url("../img/fondo2.jpg") center / cover no-repeat fixed;
 }
+
 
 .titulo {
   text-align: center;
@@ -55,42 +59,31 @@ body {
   transform: translate(-50%, -50%);
 }
 
-/* Áreas */
-.area {
-  position: absolute;
-  left: 50%;
-  width: 45%;
-  height: 12%;
-  border: 2px solid white;
-  transform: translateX(-50%);
-}
 
-.area.arriba {
-  top: 0;
-  border-top: none;
-}
-
-.area.abajo {
-  bottom: 0;
-  border-bottom: none;
-}
 
 /* ===== JUGADORES ===== */
 .jugador {
-  width: 40%;
-  max-width: 160px;
-  aspect-ratio: 2.8 / 1;
+  position: absolute;
+  width: 100px;              
+  max-width: 35vw;
+  height: 28px;              
   background: white;
   color: #1b5e20;
-  border-radius: 20px;
-  text-align: center;
+  border-radius: 14px;
   font-weight: bold;
-  font-size: clamp(12px, 3vw, 16px);
+  font-size: 13px;           
   display: flex;
   align-items: center;
   justify-content: center;
-  position: absolute;
   cursor: grab;
   user-select: none;
   touch-action: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.25); 
 }
+
+@supports (-webkit-touch-callout: none) {
+  html, body {
+    min-height: -webkit-fill-available;
+  }
+}
+
