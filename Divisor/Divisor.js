@@ -1,4 +1,5 @@
-let personas = [
+
+let jugadores = [
   'Constan',
   'Nico',
   'Seba',
@@ -28,14 +29,14 @@ function mostrarLista() {
 
   const total = totalPersonasVisibles();
 
-  personas.slice(0, total).forEach((p, index) => {
+  jugadores.slice(0, total).forEach((p, index) => {
     const li = document.createElement('li');
 
     const input = document.createElement('input');
     input.value = p;
 
     input.oninput = () => {
-      personas[index] = input.value;
+      jugadores[index] = input.value;
     };
 
     li.appendChild(input);
@@ -46,7 +47,7 @@ function mostrarLista() {
 // ===== Dividir en dos grupos =====
 function dividir() {
   const total = totalPersonasVisibles();
-  const visibles = personas.slice(0, total);
+  const visibles = jugadores.slice(0, total);
 
   const mezcladas = [...visibles].sort(() => Math.random() - 0.5);
 

@@ -1,0 +1,96 @@
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  background: url("../img/fondo2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.titulo {
+  text-align: center;
+  color: #ffffff;
+  margin: 12px 0;
+}
+
+/* ===== CANCHA ===== */
+.cancha {
+  width: 95%;
+  max-width: 700px;
+  aspect-ratio: 3 / 2;      
+  margin: 0 auto;
+  background: #2e7d32;
+  border-radius: 15px;
+  position: relative;
+  border: 4px solid white;
+  overflow: hidden;
+}
+
+/* Línea central */
+.cancha::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  background: white;
+  transform: translateX(-50%);
+}
+
+/* Círculo central */
+.cancha::after {
+  content: "";
+  position: absolute;
+  width: 18%;
+  aspect-ratio: 1;
+  border: 2px solid white;
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Áreas */
+.area {
+  position: absolute;
+  top: 50%;
+  width: 12%;
+  height: 45%;
+  border: 2px solid white;
+  transform: translateY(-50%);
+}
+
+.area.izq {
+  left: 0;
+  border-left: none;
+}
+
+.area.der {
+  right: 0;
+  border-right: none;
+}
+
+/* ===== JUGADORES ===== */
+.jugador {
+  width: 14%;
+  max-width: 90px;
+  aspect-ratio: 2.5 / 1;
+  background: white;
+  color: #1b5e20;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: bold;
+  font-size: clamp(12px, 2.5vw, 16px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}

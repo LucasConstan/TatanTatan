@@ -56,11 +56,20 @@
   font-size: 18px;
   font-weight: bold;
   transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 220px;
+  text-align: center;
 }
 
 .btn-principal:hover {
   transform: scale(1.05);
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.botones {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  align-items: center;
 }
 
 /* ===== Celular ===== */
@@ -76,5 +85,9 @@
   .btn-principal {
     width: 100%;
     padding: 15px;
+  }
+
+  .botones {
+    width: 100%;
   }
 }
