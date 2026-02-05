@@ -8,7 +8,11 @@ let jugadores = [
   'Gordo',
   'Pola',
   'Hernan',
-  'Bruno'
+  'Bruno',
+  'Fabi',
+  'Leo',
+  'Jugador 13',
+  'Jugador 14'
 ];
 
 const cancha = document.getElementById('cancha');

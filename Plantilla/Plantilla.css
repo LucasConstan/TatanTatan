@@ -13,15 +13,15 @@ body {
 
 .titulo {
   text-align: center;
-  color: #ffffff;
+  color: #1b5e20;
   margin: 12px 0;
 }
 
-/* ===== CANCHA ===== */
+/* ===== CANCHA VERTICAL ===== */
 .cancha {
   width: 95%;
-  max-width: 700px;
-  aspect-ratio: 3 / 2;      
+  max-width: 420px;
+  aspect-ratio: 2 / 3; 
   margin: 0 auto;
   background: #2e7d32;
   border-radius: 15px;
@@ -30,23 +30,23 @@ body {
   overflow: hidden;
 }
 
-/* Línea central */
+/* Línea central (horizontal) */
 .cancha::before {
   content: "";
   position: absolute;
-  left: 50%;
-  top: 0;
-  width: 2px;
-  height: 100%;
+  top: 50%;
+  left: 0;
+  height: 2px;
+  width: 100%;
   background: white;
-  transform: translateX(-50%);
+  transform: translateY(-50%);
 }
 
 /* Círculo central */
 .cancha::after {
   content: "";
   position: absolute;
-  width: 18%;
+  width: 22%;
   aspect-ratio: 1;
   border: 2px solid white;
   border-radius: 50%;
@@ -58,34 +58,34 @@ body {
 /* Áreas */
 .area {
   position: absolute;
-  top: 50%;
-  width: 12%;
-  height: 45%;
+  left: 50%;
+  width: 45%;
+  height: 12%;
   border: 2px solid white;
-  transform: translateY(-50%);
+  transform: translateX(-50%);
 }
 
-.area.izq {
-  left: 0;
-  border-left: none;
+.area.arriba {
+  top: 0;
+  border-top: none;
 }
 
-.area.der {
-  right: 0;
-  border-right: none;
+.area.abajo {
+  bottom: 0;
+  border-bottom: none;
 }
 
 /* ===== JUGADORES ===== */
 .jugador {
-  width: 14%;
-  max-width: 90px;
-  aspect-ratio: 2.5 / 1;
+  width: 40%;
+  max-width: 160px;
+  aspect-ratio: 2.8 / 1;
   background: white;
   color: #1b5e20;
   border-radius: 20px;
   text-align: center;
   font-weight: bold;
-  font-size: clamp(12px, 2.5vw, 16px);
+  font-size: clamp(12px, 3vw, 16px);
   display: flex;
   align-items: center;
   justify-content: center;
