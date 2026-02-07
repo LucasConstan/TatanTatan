@@ -1,21 +1,46 @@
+const jugadoresConImagen = {
+  hernan: "../img/Hernan.png",
+  gordo: "../img/Gordo.png",
+  negro: "../img/Negro.png",
+  pola: "../img/Pola.png",
+  
+};
+
+
+
+
 let contadorJugadores = 0;
 
-/* Crear jugador */
 function crearJugador() {
   const input = document.getElementById('nombreJugador');
   const nombre = input.value.trim();
   if (!nombre) return;
 
-  const jugador = document.createElement('div');
-  jugador.className = 'jugador';
-  jugador.textContent = nombre;
+  const clave = nombre.toLowerCase();
+  let jugador;
 
-  // posición inicial (abajo de la cancha)
+  // 👉 JUGADOR CON IMAGEN (sin marco)
+  if (jugadoresConImagen[clave]) {
+    jugador = document.createElement('div');
+    jugador.className = 'jugador-img';
+
+    const img = document.createElement('img');
+    img.src = jugadoresConImagen[clave];
+    img.alt = nombre;
+
+    jugador.appendChild(img);
+  }
+  // 👉 JUGADOR NORMAL (con nombre)
+  else {
+    jugador = document.createElement('div');
+    jugador.className = 'jugador';
+    jugador.textContent = nombre;
+  }
+
   jugador.style.left = '10px';
-  jugador.style.top = (200 + contadorJugadores * 34) + 'px';
+  jugador.style.top = (200 + contadorJugadores * 36) + 'px';
 
   hacerDraggable(jugador);
-
   document.body.appendChild(jugador);
 
   contadorJugadores++;
