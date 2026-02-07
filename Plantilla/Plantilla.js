@@ -3,6 +3,12 @@ const jugadoresConImagen = {
   gordo: "../img/Gordo.png",
   negro: "../img/Negro.png",
   pola: "../img/Pola.png",
+  seba: "../img/Seba.png",
+  nico: "../img/Nico.png",
+  oti: "../img/Oti.png",
+  constan: "../img/Constan.png",
+  bruno: "../img/Bruno.png",
+
   
 };
 

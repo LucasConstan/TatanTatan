@@ -127,8 +127,8 @@ body {
 
 .jugador-img {
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   cursor: grab;
   user-select: none;
   touch-action: none;
