@@ -1,73 +1,51 @@
-let jugadores = [
-  'Constan',
-  'Nico',
-  'Seba',
-  'Braian',
-  'Ezequiel',
-  'Oti',
-  'Gordo',
-  'Pola',
-  'Hernan',
-  'Bruno',
-  'Fabi',
-  'Leo',
-  'Jugador 13',
-  'Jugador 14'
-];
+let contadorJugadores = 0;
 
-const cancha = document.getElementById('cancha');
+/* Crear jugador */
+function crearJugador() {
+  const input = document.getElementById('nombreJugador');
+  const nombre = input.value.trim();
+  if (!nombre) return;
 
-// Áreas
-const areaIzq = document.createElement('div');
-areaIzq.className = 'area izq';
+  const jugador = document.createElement('div');
+  jugador.className = 'jugador';
+  jugador.textContent = nombre;
 
-const areaDer = document.createElement('div');
-areaDer.className = 'area der';
+  // posición inicial (abajo de la cancha)
+  jugador.style.left = '10px';
+  jugador.style.top = (200 + contadorJugadores * 34) + 'px';
 
-cancha.appendChild(areaIzq);
-cancha.appendChild(areaDer);
+  hacerDraggable(jugador);
 
-let activo = null;
-let offsetX = 0;
-let offsetY = 0;
+  document.body.appendChild(jugador);
 
-// Crear jugadores
-jugadores.forEach((nombre, i) => {
-  const div = document.createElement('div');
-  div.className = 'jugador';
-  div.textContent = nombre;
+  contadorJugadores++;
+  input.value = '';
+}
 
-  div.style.left = '2%';
-  div.style.top = (5 + i * 8) + '%';
+/* Drag & drop libre */
+function hacerDraggable(el) {
+  let offsetX = 0;
+  let offsetY = 0;
 
-  cancha.appendChild(div);
+  el.addEventListener('pointerdown', e => {
+    el.setPointerCapture(e.pointerId);
+    offsetX = e.clientX - el.offsetLeft;
+    offsetY = e.clientY - el.offsetTop;
+    el.style.cursor = 'grabbing';
 
-  div.addEventListener('pointerdown', e => {
-    activo = div;
-    const rect = div.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
-    div.setPointerCapture(e.pointerId);
+    const mover = ev => {
+      el.style.left = ev.clientX - offsetX + 'px';
+      el.style.top = ev.clientY - offsetY + 'px';
+    };
+
+    const soltar = () => {
+      el.releasePointerCapture(e.pointerId);
+      document.removeEventListener('pointermove', mover);
+      document.removeEventListener('pointerup', soltar);
+      el.style.cursor = 'grab';
+    };
+
+    document.addEventListener('pointermove', mover);
+    document.addEventListener('pointerup', soltar);
   });
-
-  div.addEventListener('pointerup', e => {
-    div.releasePointerCapture(e.pointerId);
-    activo = null;
-  });
-});
-
-// Movimiento
-document.addEventListener('pointermove', e => {
-  if (!activo) return;
-
-  const rect = cancha.getBoundingClientRect();
-
-  let x = e.clientX - rect.left - offsetX;
-  let y = e.clientY - rect.top - offsetY;
-
-  x = Math.max(0, Math.min(x, cancha.clientWidth - activo.offsetWidth));
-  y = Math.max(0, Math.min(y, cancha.clientHeight - activo.offsetHeight));
-
-  activo.style.left = x + 'px';
-  activo.style.top = y + 'px';
-});
+}

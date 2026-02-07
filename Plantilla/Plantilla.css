@@ -59,7 +59,51 @@ body {
   transform: translate(-50%, -50%);
 }
 
+/* Áreas */
+.area {
+  position: absolute;
+  left: 50%;
+  width: 55%;
+  height: 16%;
+  border: 2px solid white;
+  transform: translateX(-50%);
+}
 
+.area.arriba {
+  top: 6px;
+  border-top: none;
+}
+
+.area.abajo {
+  bottom: 6px;
+  border-bottom: none;
+}
+
+/* ===== CREAR JUGADOR ===== */
+.crear-jugador {
+  display: flex;
+  gap: 8px;
+  max-width: 420px;
+  margin: 10px auto 20px;
+  padding: 0 10px;
+}
+
+.crear-jugador input {
+  flex: 1;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.crear-jugador button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #1b5e20;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
 
 /* ===== JUGADORES ===== */
 .jugador {
