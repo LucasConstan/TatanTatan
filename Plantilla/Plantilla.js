@@ -8,6 +8,11 @@ const jugadoresConImagen = {
   oti: "../img/Oti.png",
   constan: "../img/Constan.png",
   bruno: "../img/Bruno.png",
+  braian: "../img/Braian.png",
+  pola2: "../img/Pola2.png",
+  hernan2: "../img/Hernan2.png",
+  hernan3: "../img/Hernan3.png",
+  pelota: "../img/Pelota.png",
 
   
 };
@@ -25,7 +30,7 @@ function crearJugador() {
   const clave = nombre.toLowerCase();
   let jugador;
 
-  // 👉 JUGADOR CON IMAGEN (sin marco)
+  // JUGADOR CON IMAGEN
   if (jugadoresConImagen[clave]) {
     jugador = document.createElement('div');
     jugador.className = 'jugador-img';
@@ -34,9 +39,14 @@ function crearJugador() {
     img.src = jugadoresConImagen[clave];
     img.alt = nombre;
 
+    if (clave === 'pelota') {
+    jugador.style.width = '40px';
+    jugador.style.height = '40px';
+  }
+
     jugador.appendChild(img);
   }
-  // 👉 JUGADOR NORMAL (con nombre)
+  // JUGADOR NORMAL
   else {
     jugador = document.createElement('div');
     jugador.className = 'jugador';
