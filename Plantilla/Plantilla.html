@@ -2,24 +2,46 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plantilla</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Plantilla · TatanTatan</title>
+  <meta name="theme-color" content="#1b5e20">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="icon" href="../img/favicon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+  <link rel="stylesheet" href="../comun/base.css">
   <link rel="stylesheet" href="Plantilla.css">
 </head>
 <body>
 
-<h2 class="titulo">Arrastrá los jugadores</h2>
+  <header class="barra">
+    <a class="volver" href="../index.html">← Menú</a>
+    <h1>Plantilla</h1>
+  </header>
 
-  <div class="cancha">
-    <div class="area arriba"></div>
-    <div class="area abajo"></div>
-  </div>
+  <main class="plantilla">
+    <form class="crear-jugador" id="formJugador">
+      <input type="text" id="nombreJugador" class="campo" placeholder="Nombre del jugador"
+             autocomplete="off" autocapitalize="words" maxlength="20" enterkeyhint="done"
+             aria-label="Nombre del jugador">
+      <button type="submit" class="btn">Agregar</button>
+    </form>
 
-<div class="crear-jugador">
-  <input type="text" id="nombreJugador" placeholder="Nombre del jugador">
-  <button onclick="crearJugador()">Agregar</button>
-</div>
+    <div class="cancha" id="cancha" aria-label="Cancha">
+      <div class="area arriba"></div>
+      <div class="area abajo"></div>
+    </div>
 
-<script src="Plantilla.js"></script>
+    <p class="ayuda">Arrastrá las fichas · Tocá una para cambiarle el color · Llevala al tacho para borrarla</p>
+
+    <div class="acciones">
+      <button type="button" id="btnExportar" class="btn">📷 Exportar imagen</button>
+      <button type="button" id="btnLimpiar" class="btn btn-secundario">🧹 Limpiar cancha</button>
+    </div>
+  </main>
+
+  <div class="papelera" id="papelera" hidden>🗑️ Soltá acá para borrar</div>
+
+  <script src="../comun/app.js"></script>
+  <script src="Plantilla.js"></script>
 </body>
 </html>

@@ -2,27 +2,32 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>TatanTatan</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Dividí los equipos y armá la plantilla del partido.">
+  <meta name="theme-color" content="#1b5e20">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="img/favicon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  <link rel="stylesheet" href="comun/base.css">
   <link rel="stylesheet" href="index.css">
 </head>
 <body class="home">
 
-  <div class="home-container">
+  <main class="home-container">
     <h1>TatanTatan</h1>
 
-    <div class="botones">
-      <a href="Divisor/Divisor.html" class="btn-principal">
-      Divisor de equipos
-    </a>
+    <nav class="botones" aria-label="Secciones">
+      <a href="Divisor/Divisor.html" class="btn btn-principal">⚖️ Divisor de equipos</a>
+      <a href="Plantilla/Plantilla.html" class="btn btn-principal">📋 Plantilla</a>
+      <button type="button" id="btnInstalar" class="btn btn-secundario" hidden>📲 Instalar app</button>
+    </nav>
 
-    <a href="Plantilla/Plantilla.html" class="btn-principal">
-      Plantilla
-    </a>
+    <p id="ayudaIOS" class="ayuda-ios" hidden>
+      Para tenerla como app: tocá <strong>Compartir</strong> y después <strong>Agregar a inicio</strong>.
+    </p>
+  </main>
 
-    </div>
- 
-  </div>
-
+  <script src="comun/app.js"></script>
 </body>
 </html>

@@ -1,63 +1,292 @@
-body {
-  background: url("../img/fondo2.jpg");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  color: white;
+/* ===== Divisor de equipos ===== */
+
+.contenedor {
+  max-width: 720px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-#lista li {
+/* ===== Opciones ===== */
+.opciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.segmentado {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.segmentado label {
+  position: relative;
+  cursor: pointer;
+}
+
+.segmentado input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.segmentado span {
+  display: block;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 700;
+  color: var(--texto-suave);
+  transition: background-color 0.15s, color 0.15s;
+}
+
+.segmentado input:checked + span {
+  background: #fff;
+  color: var(--verde);
+}
+
+.segmentado input:focus-visible + span {
+  outline: 3px solid var(--foco);
+  outline-offset: 2px;
+}
+
+.interruptor {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.interruptor input {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--cesped-1);
+}
+
+/* ===== Lista de jugadores ===== */
+.panel-titulo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.panel-titulo h2 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.contador {
+  font-weight: 700;
+  font-size: 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(46, 125, 50, 0.85);
+  white-space: nowrap;
+}
+
+.contador.incompleto {
+  background: rgba(255, 202, 40, 0.9);
+  color: var(--equipo-b-texto);
+}
+
+.ayuda {
+  margin: 0 0 10px;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.lista-jugadores {
   list-style: none;
-  
+  margin: 0 0 12px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 8px;
 }
 
-#lista input {
-  border-radius: 6px;
-  border: 1px solid #c8e6c9;
-  background-color: #f1f8f4;
+.jugador {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  transition: opacity 0.15s;
 }
 
-input {
-  padding: 8px;
-  margin: 5px 0;
+.jugador.fuera {
+  opacity: 0.5;
 }
 
-button{
-  display: inline-block;
-  background: white;
-  color: #0d0e0d;
-  padding: 8px;
-  border-radius: 30px;
-  text-decoration: none;
+.jugador .juega {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  accent-color: var(--cesped-1);
+  cursor: pointer;
+}
+
+.jugador .nombre {
+  flex: 1;
+  min-width: 0;
+  min-height: 38px;
+  padding: 6px 10px;
+}
+
+.jugador .nivel {
+  flex-shrink: 0;
+  min-height: 38px;
+  padding: 6px 4px;
+  width: 64px;
+}
+
+.sin-nivel .nivel {
+  display: none;
+}
+
+.jugador .quitar {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--texto-suave);
   font-size: 18px;
-  font-weight: bold;
-  transition: transform 0.2s, box-shadow 0.2s;
-  margin: 5px 0;
+  cursor: pointer;
 }
 
-.grupos {
+.jugador .quitar:hover {
+  background: rgba(229, 57, 53, 0.25);
+  color: #fff;
+}
+
+.fila-agregar {
   display: flex;
-  gap: 40px;
-  margin-top: 20px;
+  gap: 8px;
 }
 
-.opciones-cancha {
-  margin-bottom: 20px;
+.fila-agregar .campo {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ===== Botón principal ===== */
+.btn-grande {
+  min-height: 56px;
+  font-size: 19px;
+  box-shadow: var(--sombra);
+}
+
+/* ===== Resultado ===== */
+.equipos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.equipo {
+  border-radius: 12px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.06);
+  border-top: 5px solid var(--equipo-a);
+}
+
+.equipo-b {
+  border-top-color: var(--equipo-b);
+}
+
+.equipo h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.equipo .cantidad {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--texto-suave);
+}
+
+.equipo ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.equipo li {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 17px;
+}
+
+.equipo li:last-child {
+  border-bottom: 0;
+}
+
+.diferencia {
+  margin: 12px 0 0;
+  font-size: 14px;
+  color: var(--texto-suave);
+  text-align: center;
+}
+
+.diferencia:empty {
+  display: none;
+}
+
+.acciones {
   display: flex;
-  gap: 20px;
-  color: white;
-  font-weight: bold;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
 }
 
-.opciones-cancha input {
-  margin-right: 5px;
+.acciones .btn {
+  flex: 1 1 160px;
 }
 
-
-@media (max-width: 600px) {
-  .grupos {
+@media (max-width: 420px) {
+  .opciones {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .segmentado {
+    justify-content: center;
+  }
+
+  .segmentado label {
+    flex: 1;
+    text-align: center;
+  }
+
+  .equipos {
+    gap: 8px;
+  }
+
+  .equipo {
+    padding: 10px;
+  }
+
+  .equipo li {
+    font-size: 16px;
+  }
+}
+
+/* En el celu el botón queda a mano mientras se recorre la lista */
+@media (max-width: 720px) {
+  .btn-grande {
+    position: sticky;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    z-index: 5;
   }
 }
