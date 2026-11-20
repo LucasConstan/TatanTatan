@@ -20,6 +20,24 @@
 
   <main class="contenedor">
 
+    <section class="panel grupo" aria-label="Grupo">
+      <form id="formGrupo" class="fila-agregar">
+        <input id="codigoGrupo" class="campo" placeholder="Código del grupo" autocomplete="off"
+               autocapitalize="none" spellcheck="false" enterkeyhint="go" aria-label="Código del grupo">
+        <button type="submit" class="btn">Cargar</button>
+      </form>
+
+      <div id="grupoActivo" class="grupo-activo" hidden>
+        <p class="grupo-nombre">👥 <strong id="nombreGrupo"></strong></p>
+        <p id="avisoCambios" class="aviso-cambios" hidden>La lista del grupo cambió.</p>
+        <div class="grupo-botones">
+          <button type="button" id="btnActualizarGrupo" class="btn btn-secundario btn-chico"
+                  title="Reemplaza jugadores y niveles por los de la lista del grupo">Traer lista del grupo</button>
+          <button type="button" id="btnSalirGrupo" class="btn btn-secundario btn-chico">Salir del grupo</button>
+        </div>
+      </div>
+    </section>
+
     <section class="panel opciones" aria-label="Opciones del partido">
       <div class="segmentado" role="radiogroup" aria-label="Tipo de cancha">
         <label><input type="radio" name="cancha" value="5"><span>Cancha de 5</span></label>
@@ -41,6 +59,7 @@
       <p id="ayudaNivel" class="ayuda">Nivel: 1 = flojo · 5 = crack. Solo se usa para emparejar.</p>
 
       <ul id="lista" class="lista-jugadores"></ul>
+      <p id="listaVacia" class="vacia" hidden>Ingresá el código de tu grupo o agregá jugadores a mano.</p>
 
       <form id="formAgregar" class="fila-agregar">
         <input id="nuevoJugador" class="campo" placeholder="Agregar jugador" autocomplete="off"
@@ -71,9 +90,35 @@
       </div>
     </section>
 
+    <section id="panelPublicar" class="panel publicar" hidden aria-labelledby="tituloPublicar">
+      <h2 id="tituloPublicar">Publicar lista del grupo</h2>
+      <p class="ayuda">Usa la lista de esta página: jugadores, niveles, quién juega y cancha.</p>
+      <form id="formPublicar" class="campos-publicar">
+        <input id="pubNombre" class="campo" placeholder="Nombre del grupo" autocomplete="off" aria-label="Nombre del grupo">
+        <input id="pubCodigo" class="campo" placeholder="Código" autocomplete="off" autocapitalize="none"
+               spellcheck="false" aria-label="Código del grupo">
+        <button type="submit" class="btn">Generar archivo</button>
+      </form>
+      <div id="pubResultado" hidden>
+        <p id="pubAviso" class="ayuda"></p>
+        <textarea id="pubSalida" class="campo salida" rows="6" readonly aria-label="Contenido de grupos.json"></textarea>
+        <div class="acciones">
+          <button type="button" id="btnCopiarPub" class="btn btn-secundario">📋 Copiar</button>
+          <a class="btn" href="https://github.com/LucasConstan/TatanTatan/edit/main/datos/grupos.json"
+             target="_blank" rel="noopener">Abrir en GitHub</a>
+        </div>
+        <ol class="ayuda pasos">
+          <li>Copiá el texto.</li>
+          <li>En GitHub, borrá todo el contenido del archivo y pegalo.</li>
+          <li>Tocá <strong>Commit changes</strong>. En un par de minutos les aparece a todos.</li>
+        </ol>
+      </div>
+    </section>
+
   </main>
 
   <script src="../comun/app.js"></script>
+  <script src="grupo.js"></script>
   <script src="Divisor.js"></script>
 </body>
 </html>

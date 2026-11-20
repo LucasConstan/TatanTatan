@@ -1,10 +1,6 @@
 (function () {
   'use strict';
 
-  const NOMBRES_INICIALES = [
-    'Constan', 'Nico', 'Seba', 'Braian', 'Ezequiel', 'Oti', 'Gordo',
-    'Pola', 'Hernan', 'Bruno', 'Fabi', 'Mauri', 'Leo', 'Amigo de',
-  ];
   const CUPO = { 5: 10, 7: 14 };
   const NIVEL_POR_DEFECTO = 3;
   const MAX_ENUMERAR = 20; // hasta 20 jugadores se prueban todas las combinaciones
@@ -99,33 +95,31 @@
 
   // ===== Estado =====
 
-  function estadoInicial() {
-    return {
-      cancha: '5',
-      equilibrar: true,
-      jugadores: NOMBRES_INICIALES.map((nombre, i) => ({
-        id: Tatan.id(),
-        nombre,
-        nivel: NIVEL_POR_DEFECTO,
-        juega: i < CUPO[5],
-      })),
-    };
+  const nivelValido = (n) => Math.min(5, Math.max(1, Math.round(Number(n)) || NIVEL_POR_DEFECTO));
+
+  function limpiarJugadores(lista) {
+    return (Array.isArray(lista) ? lista : [])
+      .filter((j) => j && typeof j.nombre === 'string')
+      .map((j) => ({
+        id: j.id || Tatan.id(),
+        nombre: j.nombre.slice(0, 24),
+        nivel: nivelValido(j.nivel),
+        juega: j.juega !== false,
+      }));
   }
 
+  // Sin datos guardados arranca vacío: la lista de cada grupo se carga con su código.
   function cargarEstado() {
-    const guardado = Tatan.leer('divisor');
-    if (!guardado || !Array.isArray(guardado.jugadores)) return estadoInicial();
+    const guardado = Tatan.leer('divisor') || {};
+    const grupo = guardado.grupo;
     return {
       cancha: guardado.cancha === '7' ? '7' : '5',
       equilibrar: guardado.equilibrar !== false,
-      jugadores: guardado.jugadores
-        .filter((j) => j && typeof j.nombre === 'string')
-        .map((j) => ({
-          id: j.id || Tatan.id(),
-          nombre: j.nombre,
-          nivel: Math.min(5, Math.max(1, Number(j.nivel) || NIVEL_POR_DEFECTO)),
-          juega: j.juega !== false,
-        })),
+      jugadores: limpiarJugadores(guardado.jugadores),
+      grupo:
+        grupo && typeof grupo.codigo === 'string'
+          ? { codigo: grupo.codigo, nombre: String(grupo.nombre || 'Grupo'), actualizado: String(grupo.actualizado || '') }
+          : null,
     };
   }
 
@@ -139,6 +133,7 @@
   // ===== Interfaz =====
 
   const lista = document.getElementById('lista');
+  const listaVacia = document.getElementById('listaVacia');
   const contador = document.getElementById('contador');
   const ayudaNivel = document.getElementById('ayudaNivel');
   const chkEquilibrar = document.getElementById('equilibrar');
@@ -213,6 +208,7 @@
 
   function mostrarLista() {
     lista.replaceChildren(...estado.jugadores.map(crearFila));
+    listaVacia.hidden = estado.jugadores.length > 0;
     lista.classList.toggle('sin-nivel', !estado.equilibrar);
     ayudaNivel.hidden = !estado.equilibrar;
     actualizarContador();
@@ -297,10 +293,209 @@
     return lineas.join('\n');
   }
 
+  // ===== Grupo (lista oficial por código) =====
+
+  const formGrupo = document.getElementById('formGrupo');
+  const inputCodigo = document.getElementById('codigoGrupo');
+  const grupoActivo = document.getElementById('grupoActivo');
+  const avisoCambios = document.getElementById('avisoCambios');
+
+  function mostrarGrupo() {
+    const hay = Boolean(estado.grupo);
+    formGrupo.hidden = hay;
+    grupoActivo.hidden = !hay;
+    if (hay) document.getElementById('nombreGrupo').textContent = estado.grupo.nombre;
+    avisoCambios.hidden = true;
+    grupoActivo.classList.remove('hay-cambios');
+  }
+
+  function sincronizarCancha() {
+    document.querySelectorAll('input[name="cancha"]').forEach((radio) => {
+      radio.checked = radio.value === estado.cancha;
+    });
+  }
+
+  // Reemplaza la lista por la del grupo. Si `conservarJuega`, mantiene quién juega
+  // (por nombre) en vez de usar lo que vino en la lista oficial.
+  function aplicarGrupo(grupo, codigo, conservarJuega) {
+    const anterior = JSON.parse(JSON.stringify(estado));
+    const juegaPorNombre = new Map(estado.jugadores.map((j) => [Tatan.normalizar(j.nombre), j.juega]));
+
+    estado.jugadores = limpiarJugadores(grupo.jugadores).map((j) => {
+      const clave = Tatan.normalizar(j.nombre);
+      if (conservarJuega && juegaPorNombre.has(clave)) j.juega = juegaPorNombre.get(clave);
+      return j;
+    });
+    if (!conservarJuega && (grupo.cancha === '5' || grupo.cancha === '7')) estado.cancha = grupo.cancha;
+    estado.grupo = {
+      codigo: Tatan.normalizar(codigo),
+      nombre: String(grupo.nombre || 'Grupo'),
+      actualizado: String(grupo.actualizado || ''),
+    };
+    guardar();
+    sincronizarCancha();
+    mostrarLista();
+    mostrarGrupo();
+
+    const deshacer = () => {
+      Object.assign(estado, anterior);
+      guardar();
+      sincronizarCancha();
+      mostrarLista();
+      mostrarGrupo();
+    };
+    if (anterior.jugadores.length) {
+      Tatan.toast(`Lista de ${estado.grupo.nombre} cargada`, { accion: 'Deshacer', alHacer: deshacer });
+    } else {
+      Tatan.toast(`Lista de ${estado.grupo.nombre} cargada`);
+    }
+  }
+
+  async function buscarGrupo(codigo) {
+    if (!TatanGrupo.disponible) {
+      Tatan.toast('Este navegador no permite abrir la lista del grupo');
+      return undefined;
+    }
+    try {
+      return await TatanGrupo.buscar(codigo);
+    } catch (e) {
+      Tatan.toast('No se pudo cargar la lista. Revisá la conexión.');
+      return undefined;
+    }
+  }
+
+  formGrupo.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const codigo = inputCodigo.value.trim();
+    if (!codigo) return;
+    const boton = formGrupo.querySelector('button');
+    boton.disabled = true;
+    const grupo = await buscarGrupo(codigo);
+    boton.disabled = false;
+    if (grupo === null) {
+      Tatan.toast('Código incorrecto');
+      inputCodigo.select();
+      return;
+    }
+    if (!grupo) return;
+    inputCodigo.value = '';
+    aplicarGrupo(grupo, codigo, false);
+  });
+
+  document.getElementById('btnActualizarGrupo').addEventListener('click', async () => {
+    if (!estado.grupo) return;
+    const grupo = await buscarGrupo(estado.grupo.codigo);
+    if (grupo === null) {
+      Tatan.toast('El código del grupo ya no es válido');
+      return;
+    }
+    if (grupo) aplicarGrupo(grupo, estado.grupo.codigo, true);
+  });
+
+  document.getElementById('btnSalirGrupo').addEventListener('click', () => {
+    const grupo = estado.grupo;
+    estado.grupo = null;
+    guardar();
+    mostrarGrupo();
+    Tatan.toast('Saliste del grupo (la lista queda)', {
+      accion: 'Deshacer',
+      alHacer: () => {
+        estado.grupo = grupo;
+        guardar();
+        mostrarGrupo();
+      },
+    });
+  });
+
+  // Al abrir, revisa en segundo plano si la lista oficial cambió.
+  async function revisarCambios() {
+    if (!estado.grupo || !TatanGrupo.disponible) return;
+    try {
+      const grupo = await TatanGrupo.buscar(estado.grupo.codigo);
+      if (grupo && String(grupo.actualizado || '') > estado.grupo.actualizado) {
+        avisoCambios.hidden = false;
+        grupoActivo.classList.add('hay-cambios');
+      }
+    } catch (e) {
+      /* sin red: se revisa la próxima vez */
+    }
+  }
+
+  // ===== Publicar (solo con ?publicar) =====
+
+  function iniciarPublicar() {
+    if (!new URLSearchParams(location.search).has('publicar')) return;
+    const panel = document.getElementById('panelPublicar');
+    const pubNombre = document.getElementById('pubNombre');
+    const pubCodigo = document.getElementById('pubCodigo');
+    const pubResultado = document.getElementById('pubResultado');
+    const pubSalida = document.getElementById('pubSalida');
+    const pubAviso = document.getElementById('pubAviso');
+
+    panel.hidden = false;
+    if (estado.grupo) {
+      pubNombre.value = estado.grupo.nombre;
+      pubCodigo.value = estado.grupo.codigo;
+    }
+
+    document.getElementById('formPublicar').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nombre = pubNombre.value.trim();
+      const codigo = pubCodigo.value.trim();
+      const jugadores = estado.jugadores
+        .filter((j) => j.nombre.trim() !== '')
+        .map((j) => ({ nombre: j.nombre.trim(), nivel: j.nivel, juega: j.juega }));
+      if (!nombre || !codigo) {
+        Tatan.toast('Completá el nombre y el código');
+        return;
+      }
+      if (!jugadores.length) {
+        Tatan.toast('La lista de jugadores está vacía');
+        return;
+      }
+      if (!TatanGrupo.disponible) {
+        Tatan.toast('Este navegador no permite cifrar la lista');
+        return;
+      }
+
+      const grupo = { nombre, cancha: estado.cancha, actualizado: new Date().toISOString(), jugadores };
+      let resultado;
+      try {
+        resultado = await TatanGrupo.publicar(codigo, grupo);
+      } catch (err) {
+        Tatan.toast('No se pudo leer la lista publicada. Revisá la conexión.');
+        return;
+      }
+
+      pubSalida.value = resultado.contenido;
+      pubAviso.textContent =
+        (resultado.reemplazada
+          ? `Reemplaza la lista que ya había con ese código (${jugadores.length} jugadores).`
+          : `Grupo nuevo: no había ninguno con ese código (${jugadores.length} jugadores).`) +
+        (Tatan.normalizar(codigo).length < 8 ? ' Ojo: el código es corto y se puede adivinar probando.' : '');
+      pubResultado.hidden = false;
+
+      // Este celu ya tiene la versión que se va a publicar.
+      estado.grupo = { codigo: Tatan.normalizar(codigo), nombre, actualizado: grupo.actualizado };
+      guardar();
+      mostrarGrupo();
+    });
+
+    document.getElementById('btnCopiarPub').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(pubSalida.value);
+        Tatan.toast('Copiado');
+      } catch (e) {
+        pubSalida.select();
+        Tatan.toast('Seleccioná el texto y copialo');
+      }
+    });
+  }
+
   // ===== Eventos =====
 
+  sincronizarCancha();
   document.querySelectorAll('input[name="cancha"]').forEach((radio) => {
-    radio.checked = radio.value === estado.cancha;
     radio.addEventListener('change', () => {
       estado.cancha = radio.value;
       actualizarContador();
@@ -340,6 +535,9 @@
   // ===== Inicio =====
   mostrarLista();
   mostrarEquipos();
+  mostrarGrupo();
+  iniciarPublicar();
+  revisarCambios();
 
   // Expuesto solo para pruebas desde la consola.
   window.TatanDivisor = { armarEquipos };

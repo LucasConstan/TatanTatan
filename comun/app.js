@@ -181,6 +181,7 @@
     guardar,
     id,
     hash,
+    normalizar,
     toast,
     compartirTexto,
     compartirArchivo,
