@@ -1,6 +1,6 @@
 /* Service worker de TatanTatan: permite instalar la app y usarla sin señal.
    Subí VERSION cada vez que agregues o cambies imágenes. */
-const VERSION = 'tatan-v1';
+const VERSION = 'tatan-v2';
 
 const PRECACHE = [
   './',
@@ -12,6 +12,8 @@ const PRECACHE = [
   './Divisor/Divisor.html',
   './Divisor/Divisor.css',
   './Divisor/Divisor.js',
+  './Divisor/grupo.js',
+  './datos/grupos.json',
   './Plantilla/Plantilla.html',
   './Plantilla/Plantilla.css',
   './Plantilla/Plantilla.js',
@@ -56,8 +58,9 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Páginas, CSS y JS: primero la red (así se ven los cambios publicados) y, si no hay
-// señal o tarda más de 3 s, la copia guardada. Imágenes: primero la copia guardada.
+// Páginas, CSS, JS y datos: primero la red (así se ven los cambios publicados) y, si no hay
+// señal, tarda más de 3 s o el servidor responde con error (p. ej. el sitio dado de baja),
+// la copia guardada. Imágenes: primero la copia guardada.
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
@@ -87,7 +90,9 @@ async function primeroRed(req) {
     return res;
   });
   const espera = new Promise((resolve) => setTimeout(resolve, ESPERA_RED_MS, null));
-  const res = await Promise.race([red.catch(() => null), espera]);
+  // Un 404/500 cuenta como fallo; una redirección (navegación) se deja pasar.
+  const util = (r) => (r.ok || r.type === 'opaqueredirect' ? r : null);
+  const res = await Promise.race([red.then(util).catch(() => null), espera]);
   if (res) return res;
   const guardada = await cache.match(req, { ignoreSearch: true });
   return guardada ? sinRedireccion(guardada) : red;
