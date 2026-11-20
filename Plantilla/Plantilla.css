@@ -1,48 +1,63 @@
-* {
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+/* ===== Plantilla ===== */
+
+.barra {
+  max-width: 460px;
 }
 
-html, body {
-  min-height: 100vh;
-}
-
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: url("../img/fondo2.jpg") center / cover no-repeat fixed;
-}
-
-
-.titulo {
-  text-align: center;
-  color: #1b5e20;
-  margin: 12px 0;
-}
-
-/* ===== CANCHA VERTICAL ===== */
-.cancha {
-  width: 95%;
-  max-width: 420px;
-  aspect-ratio: 2 / 3; 
+.plantilla {
+  max-width: 480px;
   margin: 0 auto;
-  background: #2e7d32;
-  border-radius: 15px;
-  position: relative;
-  border: 4px solid white;
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
 }
 
-/* Línea central (horizontal) */
+/* ===== Agregar ficha ===== */
+.crear-jugador {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.crear-jugador .campo {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ===== Cancha vertical =====
+   Es el sistema de coordenadas de las fichas: se ubican en % de su tamaño,
+   así no se desacomodan al rotar el celu o cambiar el tamaño de la ventana. */
+.cancha {
+  position: relative;
+  width: min(100%, 460px, calc((100vh - 170px) * 2 / 3));
+  width: min(100%, 460px, calc((100dvh - 170px) * 2 / 3));
+  min-width: 260px;
+  aspect-ratio: 2 / 3;
+  border-radius: 15px;
+  overflow: hidden;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--cesped-1) 0 10%,
+    var(--cesped-2) 10% 20%
+  );
+  /* línea perimetral como sombra interna: el área útil coincide con la caja */
+  box-shadow: inset 0 0 0 4px #fff, var(--sombra);
+  container-type: inline-size;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Línea central */
 .cancha::before {
   content: "";
   position: absolute;
   top: 50%;
   left: 0;
-  height: 2px;
   width: 100%;
-  background: white;
+  height: 2px;
+  background: #fff;
   transform: translateY(-50%);
 }
 
@@ -50,12 +65,12 @@ body {
 .cancha::after {
   content: "";
   position: absolute;
-  width: 22%;
-  aspect-ratio: 1;
-  border: 2px solid white;
-  border-radius: 50%;
   top: 50%;
   left: 50%;
+  width: 22%;
+  aspect-ratio: 1;
+  border: 2px solid #fff;
+  border-radius: 50%;
   transform: translate(-50%, -50%);
 }
 
@@ -65,87 +80,123 @@ body {
   left: 50%;
   width: 55%;
   height: 16%;
-  border: 2px solid white;
+  border: 2px solid #fff;
   transform: translateX(-50%);
 }
 
 .area.arriba {
-  top: 6px;
+  top: 0;
   border-top: none;
 }
 
 .area.abajo {
-  bottom: 6px;
+  bottom: 0;
   border-bottom: none;
 }
 
-/* ===== CREAR JUGADOR ===== */
-.crear-jugador {
-  display: flex;
-  gap: 8px;
-  max-width: 420px;
-  margin: 10px auto 20px;
-  padding: 0 10px;
-}
-
-.crear-jugador input {
-  flex: 1;
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-}
-
-.crear-jugador button {
-  padding: 8px 14px;
-  border: none;
-  border-radius: 8px;
-  background: #1b5e20;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-/* ===== JUGADORES ===== */
-.jugador {
+/* ===== Fichas ===== */
+.ficha {
   position: absolute;
-  width: 100px;              
-  max-width: 35vw;
-  height: 28px;              
-  background: white;
-  color: #1b5e20;
-  border-radius: 14px;
-  font-weight: bold;
-  font-size: 13px;           
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  transform: translate(-50%, -50%);
   cursor: grab;
-  user-select: none;
   touch-action: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.25); 
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.1s;
 }
 
-.jugador-img {
-  position: absolute;
-  width: 90px;
-  height: 90px;
-  cursor: grab;
-  user-select: none;
-  touch-action: none;
+.ficha.arrastrando {
+  cursor: grabbing;
+  transform: translate(-50%, -50%) scale(1.08);
+  transition: none;
 }
 
-.jugador-img img {
+.ficha-texto {
+  max-width: 32cqw;
+  padding: 0.45em 0.9em;
+  border-radius: 999px;
+  font-size: max(11px, 3.4cqw);
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+}
+
+.ficha-texto.equipo-a {
+  background: var(--equipo-a);
+  color: var(--equipo-a-texto);
+}
+
+.ficha-texto.equipo-b {
+  background: var(--equipo-b);
+  color: var(--equipo-b-texto);
+}
+
+.ficha-sticker {
+  width: 22cqw;
+  aspect-ratio: 1;
+}
+
+.ficha-sticker.chico {
+  width: 9.5cqw;
+}
+
+.ficha-sticker img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  pointer-events: none; 
+  pointer-events: none;
+  -webkit-user-drag: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
 }
 
-
-
-@supports (-webkit-touch-callout: none) {
-  html, body {
-    min-height: -webkit-fill-available;
-  }
+/* ===== Textos y acciones ===== */
+.ayuda {
+  margin: 0;
+  font-size: 13px;
+  text-align: center;
+  color: var(--texto-suave);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
 }
 
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 460px;
+}
+
+.acciones .btn {
+  flex: 1 1 180px;
+}
+
+/* ===== Tacho: aparece solo mientras se arrastra ===== */
+.papelera {
+  position: fixed;
+  left: 50%;
+  bottom: max(20px, env(safe-area-inset-bottom));
+  z-index: 50;
+  padding: 14px 24px;
+  border-radius: 999px;
+  border: 2px dashed rgba(255, 255, 255, 0.75);
+  background: rgba(183, 28, 28, 0.85);
+  color: #fff;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: var(--sombra);
+  transform: translateX(-50%);
+  transition: transform 0.15s, background-color 0.15s;
+  pointer-events: none;
+}
+
+.papelera.activa {
+  background: var(--peligro);
+  transform: translateX(-50%) scale(1.12);
+}
