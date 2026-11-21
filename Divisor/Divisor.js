@@ -108,25 +108,36 @@
       }));
   }
 
+  // Versión del formato guardado. Las anteriores a la 2 sin grupo tenían la lista
+  // predefinida de jugadores: se descarta una sola vez para que arranque vacío.
+  const ESQUEMA = 2;
+
   // Sin datos guardados arranca vacío: la lista de cada grupo se carga con su código.
   function cargarEstado() {
     const guardado = Tatan.leer('divisor') || {};
-    const grupo = guardado.grupo;
+    const grupo =
+      guardado.grupo && typeof guardado.grupo.codigo === 'string'
+        ? {
+            codigo: guardado.grupo.codigo,
+            nombre: String(guardado.grupo.nombre || 'Grupo'),
+            actualizado: String(guardado.grupo.actualizado || ''),
+          }
+        : null;
+    const listaVieja = guardado.esquema !== ESQUEMA && !grupo;
+    if (listaVieja) Tatan.guardar('equipos', null);
     return {
       cancha: guardado.cancha === '7' ? '7' : '5',
       equilibrar: guardado.equilibrar !== false,
-      jugadores: limpiarJugadores(guardado.jugadores),
-      grupo:
-        grupo && typeof grupo.codigo === 'string'
-          ? { codigo: grupo.codigo, nombre: String(grupo.nombre || 'Grupo'), actualizado: String(grupo.actualizado || '') }
-          : null,
+      jugadores: listaVieja ? [] : limpiarJugadores(guardado.jugadores),
+      grupo,
     };
   }
 
   const estado = cargarEstado();
   let equipos = Tatan.leer('equipos');
 
-  const guardar = () => Tatan.guardar('divisor', estado);
+  const guardar = () => Tatan.guardar('divisor', { ...estado, esquema: ESQUEMA });
+  guardar(); // deja marcado el formato nuevo (la migración no se repite)
   const convocados = () =>
     estado.jugadores.filter((j) => j.juega && j.nombre.trim() !== '');
 
@@ -233,6 +244,7 @@
   function mostrarEquipos() {
     if (!equipos || !Array.isArray(equipos.a) || !Array.isArray(equipos.b)) {
       resultado.hidden = true;
+      btnDividir.textContent = '⚽ Armar equipos';
       return;
     }
     const llenar = (id, nombres) => {
@@ -392,17 +404,28 @@
     if (grupo) aplicarGrupo(grupo, estado.grupo.codigo, true);
   });
 
+  // Sin código no quedan jugadores cargados: salir del grupo vacía la lista y los equipos.
   document.getElementById('btnSalirGrupo').addEventListener('click', () => {
-    const grupo = estado.grupo;
+    const anterior = { grupo: estado.grupo, jugadores: estado.jugadores, equipos };
     estado.grupo = null;
+    estado.jugadores = [];
+    equipos = null;
     guardar();
+    Tatan.guardar('equipos', null);
     mostrarGrupo();
-    Tatan.toast('Saliste del grupo (la lista queda)', {
+    mostrarLista();
+    mostrarEquipos();
+    Tatan.toast('Saliste del grupo', {
       accion: 'Deshacer',
       alHacer: () => {
-        estado.grupo = grupo;
+        estado.grupo = anterior.grupo;
+        estado.jugadores = anterior.jugadores;
+        equipos = anterior.equipos;
         guardar();
+        Tatan.guardar('equipos', equipos);
         mostrarGrupo();
+        mostrarLista();
+        mostrarEquipos();
       },
     });
   });
